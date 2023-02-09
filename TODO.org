@@ -1,0 +1,9 @@
+* [X] Configure Project -> BE
+* [X] Create Database model using xorm -> BE
+* [X] Insert To DB when register user -> BE
+* [X] after register success ory success hit be to register user -> FE
+* [X] Add more data on ory schema -> FE/ORY
+* [X] Install local grafana on docker compose -> BE
+* [X] Create Endpoint for query builder -> BE
+* [X] Create Page Query Builder -> FE
+* [X] Implement BE Query Builder With -> FE

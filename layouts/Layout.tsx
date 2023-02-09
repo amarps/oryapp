@@ -4,15 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 const Layout = (props) => {
     const router=useRouter();
-    const logout = async () =>{
-        await fetch('http://localhost:8000/api/logout',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            credentials:'include',
-            
-        });
-        await router.push('/login');
-    }
     let menu;
     if (!props.auth){
         menu=(
@@ -27,6 +18,11 @@ const Layout = (props) => {
           <a className="nav-link active" >Register</a>
         </Link>
         </li>
+        <li className="nav-item">
+        <Link legacyBehavior href="/query">
+          <a className="nav-link active" >Query</a>
+        </Link>
+        </li>
       </ul>
         )
     }else{
@@ -34,7 +30,7 @@ const Layout = (props) => {
         <ul className="navbar-nav me-auto mb-2 mb-md-0">
         <li className="nav-item">
        
-          <a href="#" className="nav-link active" onClick={logout} >Logout</a>
+          <a href={props.logout_url} className="nav-link active" >Logout</a>
         </li>
       </ul>
       )
@@ -58,7 +54,7 @@ const Layout = (props) => {
   </div>
 </nav>
 
-      <main className="form-signin">
+      <main>
         {props.children}
       </main>
     </>

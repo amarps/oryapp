@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+  postgres:
+    container_name: oryapp-postgres
+    image: postgis/postgis:13-3.2
+    restart: always
+    environment:
+      POSTGRES_USER: oryapp
+      POSTGRES_PASSWORD: oryapp
+      POSTGRES_DB: oryapp
+    ports:
+      - 5432:5432
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - 3001:3000
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+      
+volumes:
+  grafana-data:
