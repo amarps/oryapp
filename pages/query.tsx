@@ -12,36 +12,50 @@ interface WhereInterface {
 }
 
 const Query = () => {
-    const [columnStr,setColumn]=useState('');
-    const [whereStr,setWheres]=useState('');
+    const [columns,setColumn]=useState([]);
+    const [wheres,setWheres]=useState([]);
+    const [availableCol, setAvailableCol]=useState([]);
+    const [availableOperator, setAvailableOperator]=useState([
+        "=",
+        "!=",
+        "<",
+        "<=",
+        ">",
+        ">=",
+        "IN",
+        "NOT IN",
+    ]);
     const [td,setTd]=useState([{}]);
+
+    useEffect(() => {
+        var myHeaders = new Headers();
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+          };
+        // Update the document title using the browser API
+        fetch("http://localhost:8000/columns", requestOptions)
+            .then(response => response.json())
+            .then(result => { 
+                console.log(result)
+                setAvailableCol(result);              
+            })
+            .catch(error => console.log('error', error));
+      }, availableCol);
+
     const submit = async (e:SyntheticEvent) => {
         e.preventDefault();
-        var columns = columnStr.replaceAll(/\s/g,'').split(',');
-        
-        var wheres = whereStr.split(';');
-        let where: { identifier: string, sign: string, value: string}[] = [];
-        if (wheres.length != 0) {
-            wheres.forEach(w => {
-                var wArr = w.split(',');
-                if (wArr.length != 1)
-                {
-                    where.push({
-                        "identifier": wArr[0],
-                        "sign": wArr[1],
-                        "value": wArr[2]
-                    })
-                }
-            });
-        }
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         var raw = JSON.stringify({
             "table": "user",
             "columns": columns,
-            "where": where,
+            "where": wheres,
           });
+
+          console.log(columns)
 
         var requestOptions = {
             method: 'POST',
@@ -59,6 +73,75 @@ const Query = () => {
             .catch(error => console.log('error', error));
     }
 
+    const addInput = () => {   
+        setColumn(s => {
+            return[
+                ...s,"id"
+            ]
+        })
+    }
+
+    const handleChange = e => {
+        e.preventDefault();
+    
+        const index = e.target.id;
+        setColumn(s => {
+          const newArr = s.slice();
+          newArr[index] = e.target.value;
+        
+          return newArr;
+        });
+      };
+
+    
+      const addInputWhere = () => {   
+        setWheres(s => {
+            return[
+                ...s,{
+                    "identifier": "id",
+                    "sign": "=",
+                    "value": ""
+                }
+            ]
+        })
+    }
+
+    const handleChangeWheres = e => {
+        e.preventDefault();
+    
+        const index = e.target.id;
+        setWheres(s => {
+          const newArr = s.slice();
+          newArr[index].identifier = e.target.value;
+    
+          return newArr;
+        });
+      };
+
+      const handleChangeWheres2 = e => {
+        e.preventDefault();
+    
+        const index = e.target.id;
+        setWheres(s => {
+          const newArr = s.slice();
+          newArr[index].sign = e.target.value;
+    
+          return newArr;
+        });
+      };
+
+      const handleChangeWheres3 = e => {
+        e.preventDefault();
+    
+        const index = e.target.id;
+        setWheres(s => {
+          const newArr = s.slice();
+          newArr[index].value = e.target.value;
+    
+          return newArr;
+        });
+      };
+
   	return (
 	<Layout>
 		<Head>
@@ -72,25 +155,55 @@ const Query = () => {
         </div>
         <div className="query">
             <div className="d-flex">
-                <div className="flex-item blue">FROM</div>
-                <div className="flex-item">user</div>
-                <div className="flex-item flex-fill"></div>
+                <div className="bg-white flex-item blue">FROM</div>
+                <div className="bg-white flex-item">user</div>
+                <div className="bg-white flex-item flex-fill"></div>
             </div>
         
         
             <div className="d-flex">
-                <div className="flex-item blue">SELECT</div>
-                <div className="flex-item flex-fill">
-                    <input onChange={e =>setColumn(e.target.value)} className="w-100" placeholder="username, email"></input>
-                </div>
+                <div className="bg-white flex-item blue">SELECT</div>
+                    {columns.map((item, i) => {
+                        return (
+                        <div className="bg-white flex-item qform">
+                            <select id={i} onChange={handleChange} className="w-100">
+                                {availableCol.map((jtem, j) => {
+
+                                    return(<option key={j} name={jtem}>{jtem}</option>)
+                                })}
+                            </select>
+                            {/* <input id={i} onChange={handleChange} className="w-100" placeholder="username"></input> */}
+                        </div>
+                        );
+                    })}
+                
+                <button className="btn btn-primary flex-item" onClick={addInput} type="submit">+</button>
+                <div className="bg-white flex-item flex-fill"></div>
             </div>
         
         
             <div className="d-flex">
-                <div className="flex-item blue">WHERE</div>
-                <div className="flex-item flex-fill">
-                <input onChange={e =>setWheres(e.target.value)} className="w-100" placeholder="col,=,2; col,<,3"></input>
-                </div>
+                <div className="bg-white flex-item blue">WHERE</div>
+                {wheres.map((item, i) => {
+                    return (
+                        <div className="bg-white flex-item qform">
+                            <select id={i} onChange={handleChangeWheres} className="w-100">
+                                {availableCol.map((jtem, j) => {
+                                    return(<option key={j} name={jtem}>{jtem}</option>)
+                                })}
+                            </select>
+                            <select id={i} onChange={handleChangeWheres2} className="w-100">
+                                {availableOperator.map((jtem, j) => {
+                                    return(<option key={j} name={jtem}>{jtem}</option>)
+                                })}
+                            </select>
+                            {/* <input id={i} onChange={handleChangeWheres2} className="whereform" placeholder="="></input> */}
+                            <input id={i} onChange={handleChangeWheres3} className="whereform" placeholder="val"></input>
+                        </div>
+                    );
+                })}
+                <button className="btn btn-primary flex-item" onClick={addInputWhere} type="submit">+</button>
+                <div className="bg-white flex-item flex-fill"></div>
             </div>
         </div>
 

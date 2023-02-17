@@ -96,6 +96,12 @@
   border: none;
 }
 
+.query select {
+  background-color: white;
+  outline: none;
+  border: none;
+}
+
 .qform {
   width: 150px;
 }
@@ -103,4 +109,11 @@
 .blue {
   width: 120px;
   color: #009efa;
+}
+
+.whereform {
+  width: 100%;
+  outline: auto;
+  background-color: hwb(231 94% 4%);
+  margin: 2px;
 }

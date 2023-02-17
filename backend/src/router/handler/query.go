@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"oryapp/src/model"
 
@@ -24,4 +25,29 @@ func Query(db *xorm.Engine, qr QueryRequest) ([]model.User, error) {
 	}
 
 	return users, nil
+}
+
+func GetColumnsName(db *xorm.Engine) ([]string, error) {
+	rows, err := db.DB().QueryContext(context.Background(), `
+	SELECT column_name
+		FROM information_schema.columns
+   	WHERE table_schema = 'public'
+		AND table_name = 'user';
+	`)
+	if err != nil {
+		return []string{}, err
+	}
+	defer rows.Close()
+
+	columns := []string{}
+	for rows.Next() {
+		var column string
+		err = rows.Scan(&column)
+		if err != nil {
+			return columns, err
+		}
+		columns = append(columns, column)
+	}
+
+	return columns, nil
 }

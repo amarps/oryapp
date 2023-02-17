@@ -25,10 +25,11 @@
           }
         },
         "email": {
-            "type": "string",
-            "title": "Email",
-            "maxLength": 100,
-          }
+          "type": "string",
+          "title": "Email",
+          "format": "email",
+          "maxLength": 100
+        }
       },
       "required": [
         "username"

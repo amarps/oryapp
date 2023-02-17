@@ -55,3 +55,15 @@ func (handler *Handler) Query(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusCreated)
 	render.JSON(w, r, res)
 }
+
+func (handler *Handler) Columns(w http.ResponseWriter, r *http.Request) {
+	res, err := GetColumnsName(handler.app.Db())
+	if err != nil {
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, RegisterResponse{Message: err.Error()})
+		return
+	}
+
+	render.Status(r, http.StatusCreated)
+	render.JSON(w, r, res)
+}

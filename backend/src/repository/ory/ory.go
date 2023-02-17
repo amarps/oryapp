@@ -64,8 +64,7 @@ func RegisterUser(db *xorm.Engine, id string) (OryRegisterResponse, error) {
 		fmt.Println(err)
 		return OryRegisterResponse{}, err
 	}
-	req.Header.Add("Authorization", "Bearer ory_pat_uajYEhCzo0HQZU3SQoiwHSHwS912BRkp")
-	req.Header.Add("Cookie", "__cfruid=10ebd9e6630a64193968b216cf7c3e9a1ec54de6-1675711653; __cflb=0pg1SWCwbQFdoVU5oSEaJ3UvKCi76Hf8mv5wuJLj; csrf_token_ffc79f0a1e684531513fd850f0c5cb3297fee0f63647bb3b89ed1c40dad16e17=GQdO8fkCP6n8k3UCyaoXPPqiWCttu+Thvwdng79/G6A=")
+	req.Header.Add("Authorization", fmt.Sprint("Bearer ", os.Getenv("ORY_ACCESS_TOKEN")))
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -89,8 +88,7 @@ func RegisterUser(db *xorm.Engine, id string) (OryRegisterResponse, error) {
 	registerUser := model.User{
 		Id:           oryRegResp.Id,
 		Email:        oryRegResp.Traits.Email,
-		FirstName:    oryRegResp.Traits.Username,
-		LastName:     "",
+		Username:     oryRegResp.Traits.Username,
 		RegisteredAt: &now,
 		UpdatedAt:    &time.Time{},
 	}

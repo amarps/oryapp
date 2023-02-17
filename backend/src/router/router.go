@@ -34,6 +34,7 @@ func initRouter(app *app.App) *chi.Mux {
 
 	router.Post("/register/{id}", h.RegisterUser)
 	router.Post("/query", h.Query)
+	router.Get("/columns", h.Columns)
 
 	return router
 }

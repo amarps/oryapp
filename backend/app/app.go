@@ -19,7 +19,7 @@ type (
 )
 
 func New() *App {
-	err := godotenv.Load(".env")
+	err := godotenv.Load("../.env")
 	if err != nil {
 		panic(err)
 	}
